@@ -59,7 +59,7 @@ Using the braket.circuits.Circuit class to build your quantum circuit. Add gates
 
 Execute the Quantum Circuit:
 Python code
-# For a local simulato
+# For a local simulator
 device = LocalSimulator()
 
 # For an actual quantum device (using AWS credentials)
