@@ -1,80 +1,88 @@
-Solution Approach:
+# TV Advertisement Scheduling Using Quantum Optimization
 
-Step by step process 
+## Overview
+This project leverages quantum computing techniques, specifically the **Quantum Approximate Optimization Algorithm (QAOA)**, to optimize TV advertisement scheduling. The goal is to allocate advertisements to time slots efficiently while ensuring that similar advertisements do not appear in the same break. The optimization is performed using **Amazon Braket**, a cloud-based quantum computing platform.
 
-Encoding Advertisements:
-Assigning a quantum state (or qubit) to each advertisement slot during the commercial break. The state of the qubit can represent whether an ad is scheduled (|1⟩) or not (|0⟩).
+## Solution Approach
 
-Constraint Implementation:
-To ensure that similar advertisement products do not come in a single break, we will introduce a penalty in the quantum Hamiltonian such that if two similar products are scheduled in the same break, the energy of the system (or the cost function) increases.
+### 1. Encoding Advertisements
+Each advertisement slot during a commercial break is assigned a quantum state (or qubit). The state of the qubit represents whether an ad is scheduled (`|1\rangle`) or not (`|0\rangle`).
 
-Optimization:
-Using QAOA quantum optimization algorithms, we will  find the lowest energy state (or the minimum of the cost function). This state would represent the optimal advertisement scheduling.
+### 2. Constraint Implementation
+To ensure that similar advertisements do not appear in a single break, a **penalty function** is introduced in the quantum Hamiltonian. If two similar ads are scheduled in the same break, the energy of the system (cost function) increases.
 
-Measurement:
-Once the quantum algorithm finds the optimal state, measure the qubits to get the final scheduling of advertisements.
+### 3. Optimization using QAOA
+QAOA is employed to find the lowest energy state of the system, representing the optimal advertisement schedule. The quantum algorithm iterates over different configurations to minimize the cost function.
 
-Basically, The solution approach for the TV advertisement scheduling problem is centered around leveraging quantum computing techniques, with a primary focus on the Quantum Approximate Optimization Algorithm (QAOA). The goal is to optimize the allocation of advertisements to time slots while adhering to the critical constraints.
+### 4. Measurement
+Once the quantum algorithm finds the optimal state, the qubits are measured to extract the final advertisement scheduling.
 
-Quantum Approximate Optimization Algorithm (QAOA): The QAOA is a quantum algorithm designed for optimization tasks. It combines a classical optimization routine with a quantum circuit. In our case, it serves as the core tool for optimizing the advertisement scheduling.
+---
 
+## Running on Amazon Braket
+To execute the quantum optimization for advertisement scheduling, we utilize **Amazon Braket**. Below are the steps to set up the environment and run the code.
 
-
-Running on Amazon Braket
-
-To execute the quantum optimization for advertisement scheduling, we utilize Amazon Braket, a comprehensive cloud-based quantum computing platform. Below are the steps to set up the environment and run the code:
-
-Amazon Braket Setup: Then, set up an Amazon Braket environment by following the instructions provided in the official Amazon Braket documentation.
-
-Accessing Braket Services: Once your Braket environment is ready, access the services by using your AWS credentials and Braket access key. This step allows you to access and utilize Braket's quantum computing resources.
-
-Executing the Code: With Braket services at your disposal, you can run the Qiskit-based code for the advertisement scheduling problem. Make sure to specify the quantum device or simulator for the execution.
-
-Collecting Results: After execution, collect and analyze the results provided by Amazon Braket. You can gain insights into the optimized advertisement schedule, which adheres to the constraint of product-type separation in slots.
-
-
-
-Step by step process:
-
-Set Up Your Environment:
-Make sure you have the Amazon Braket Python SDK installed in your Python environment.
-Python code: 
+### 1. Environment Setup
+Ensure you have the **Amazon Braket Python SDK** installed in your environment.
+```bash
 pip install amazon-braket-sdk
-Import Necessary Libraries:
+```
 
+### 2. Import Necessary Libraries
+```python
 import numpy as np
 from braket.circuits import Circuit
 from braket.devices import LocalSimulator
-from braket.aws import AwsDevice
-from braket.aws import AwsSession
+from braket.aws import AwsDevice, AwsSession
 from braket.ocean_plugin import BraketSampler, BraketDWaveSampler
+```
 
-Define Your Problem:
-Finding out the no of Qubits required for our optimisation problem. 
-And Creating an objective function.
+### 3. Define the Problem
+- Determine the number of qubits required.
+- Formulate the objective function to minimize the total number of slots used while enforcing the constraint of avoiding product-type conflicts within the same slot.
 
-Create a Quantum Circuit:
-Using the braket.circuits.Circuit class to build your quantum circuit. Add gates and operations that represent your problem constraints.
+### 4. Create a Quantum Circuit
+Use the `braket.circuits.Circuit` class to construct the quantum circuit and define gates and operations that encode the problem constraints.
+```python
+circuit = Circuit()
+circuit.h(range(num_qubits))  # Apply Hadamard gates to create a superposition
+# Add additional gates for encoding the constraints
+```
 
-
-Execute the Quantum Circuit:
-Python code
-# For a local simulator
+### 5. Execute the Quantum Circuit
+#### Using a Local Simulator
+```python
 device = LocalSimulator()
+```
 
-# For an actual quantum device (using AWS credentials)
-# aws_session = AwsSession(your_access_key, your_secret_key, your_session_token)
-# device = AwsDevice("your_device_arn", aws_session)
+#### Using an Actual Quantum Device (AWS)
+```python
+aws_session = AwsSession()
+device = AwsDevice("your_device_arn", aws_session)
+```
 
-# Execute the circuit
+Run the circuit:
+```python
 task = device.run(circuit, shots=1000)
+```
 
-Retrieve and Analyze Results:
-Python code
-
+### 6. Retrieve and Analyze Results
+```python
 result = task.result()
+print(result.measurement_counts)
+```
 
-Finally we Iterate and Optimize,
-Objective Function: We formulate the optimization problem as a QAOA task. The objective function is designed to minimize the total number of slots used while taking into account the constraint of avoiding product-type conflicts within the same slot. The objective function is constructed in a way that reflects the similarity between advertisements.
+### 7. Iteration and Optimization
+- The objective function is optimized iteratively to find the best configuration.
+- The QAOA approach ensures that the final schedule minimizes conflicts while effectively utilizing advertisement slots.
+
+---
+
+## Conclusion
+This project presents an innovative approach to **TV advertisement scheduling** using **quantum optimization**. By leveraging QAOA and Amazon Braket, the algorithm efficiently allocates ads while adhering to predefined constraints, demonstrating the power of quantum computing in solving combinatorial optimization problems.
+
+## References
+- [Amazon Braket Documentation](https://docs.aws.amazon.com/braket/)
+- [Quantum Approximate Optimization Algorithm (QAOA)](https://arxiv.org/abs/1411.4028)
 
 
